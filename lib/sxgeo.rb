@@ -5,8 +5,9 @@ class SxGeo
 	SXGEO_FILE = 0
 	SXGEO_MEMORY = 1
 	SXGEO_BATCH = 2
+	SXGEO_CITY_FILE = File.dirname(__FILE__) + "/sxgeo/SxGeoCity.dat"
 
-	def initialize (db_file = File.dirname(__FILE__) + "/sxgeo/SxGeoCity.dat", type = SXGEO_FILE)
+	def initialize (db_file = SXGEO_CITY_FILE, type = SXGEO_FILE)
 		@cc2iso = [
 			'', 'AP', 'EU', 'AD', 'AE', 'AF', 'AG', 'AI', 'AL', 'AM', 'AN', 'AO', 'AQ',
 			'AR', 'AS', 'AT', 'AU', 'AW', 'AZ', 'BA', 'BB', 'BD', 'BE', 'BF', 'BG', 'BH',
