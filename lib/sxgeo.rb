@@ -121,7 +121,6 @@ class SxGeo
 		# if ip1n == 0 || ip1n == 10 || ip1n == 127 || ip1n >= @b_idx_len || false === (ipn = ip2long(ip)) # TODO
 		# 	return false
 		# end
-		 # binding.pry
 		ipn = [ipn].pack 'N'
 		@ip1c = ip1n.chr
 		# Находим блок данных индексе первых байт
@@ -144,7 +143,6 @@ class SxGeo
 		len = max - min
 		# Находим нужный диапазон в БД
 		if @memory_mode
-			# binding.pry
 			puts "#{ipn}, #{min}, #{max}" if @debug_mode
 			return search_db(@db, ipn, min, max)
 		else
@@ -160,15 +158,6 @@ class SxGeo
 	  end
 	  long
 	end
-
-	# def long2ip(long)
-	#   ip = []
-	#   4.times do |i|
-	#     ip.push(long.to_i & 255)
-	#     long = long.to_i >> 8
-	#   end
-	#   ip.join(".")
-	# end
 
 	def parseCity(seek)
 		if @memory_mode
