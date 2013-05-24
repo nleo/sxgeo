@@ -7,7 +7,7 @@ class SxGeo
 	SXGEO_BATCH = 2
 	SXGEO_CITY_FILE = File.dirname(__FILE__) + "/sxgeo/SxGeoCity.dat"
 
-	def initialize (db_file = SXGEO_CITY_FILE, type = SXGEO_FILE)
+	def initialize (db_file = SXGEO_CITY_FILE, mode = SXGEO_FILE)
 		@cc2iso = [
 			'', 'AP', 'EU', 'AD', 'AE', 'AF', 'AG', 'AI', 'AL', 'AM', 'AN', 'AO', 'AQ',
 			'AR', 'AS', 'AT', 'AU', 'AW', 'AZ', 'BA', 'BB', 'BD', 'BE', 'BF', 'BG', 'BH',
@@ -31,8 +31,8 @@ class SxGeo
 			'AX', 'GG', 'IM', 'JE', 'BL', 'MF'
 		]
 
-		@batch_mode  = false
-		@memory_mode = false
+		@batch_mode  = 0
+		@memory_mode = 0
 		@debug_mode  = false
 
 		@fh = File.open(db_file, 'rb')
@@ -46,14 +46,14 @@ class SxGeo
 		@b_idx_str = @fh.read @b_idx_len * 4
 		@m_idx_str = @fh.read @m_idx_len * 4
 		@block_len   = 3 + @id_len;
-		@batch_mode  = type & SXGEO_BATCH
-		@memory_mode = type & SXGEO_MEMORY
+		@batch_mode  = mode & SXGEO_BATCH
+		@memory_mode = mode & SXGEO_MEMORY
 		@db_begin = @fh.tell
-		if (@batch_mode)
+		if @batch_mode != 0
 			@b_idx_arr = @b_idx_str.unpack("N*")
 			@m_idx_arr = @m_idx_str.scan(/.{1,4}/)
 		end
-		if (@memory_mode)
+		if @memory_mode != 0
 			@db = @fh.read @db_items * @block_len
 			@regions_db = @fh.read @region_size
 			@cities_db  = @fh.read @city_size
@@ -73,7 +73,7 @@ class SxGeo
 					max = offset
 				end
 			end
-			while ipn > @m_idx_arr[min] && min < max
+			while (ipn > @m_idx_arr[min]) && (min < max)
 				min+=1
 			end
 		else
@@ -126,7 +126,7 @@ class SxGeo
 		@ip1c = ip1n.chr
 		# Находим блок данных индексе первых байт
 		blocks = {}
-		if @batch_mode
+		if @batch_mode != 0
 			blocks = {'min' => @b_idx_arr[ip1n.to_i-1], 'max' => @b_idx_arr[ip1n.to_i]}
 		else
 			blocks['min'], blocks['max'] = @b_idx_str[(ip1n - 1) * 4, (ip1n - 1) * 4+8].unpack 'NN'
@@ -143,7 +143,7 @@ class SxGeo
 		max = blocks['max'] if max > blocks['max']
 		len = max - min
 		# Находим нужный диапазон в БД
-		if @memory_mode
+		if @memory_mode != 0
 			puts "#{ipn}, #{min}, #{max}" if @debug_mode
 			return search_db(@db, ipn, min, max)
 		else
@@ -161,7 +161,7 @@ class SxGeo
 	end
 
 	def parseCity(seek)
-		if @memory_mode
+		if @memory_mode != 0
 			raw = @cities_db[seek, @max_city]
 		else
 			@fh.pos = @cities_begin + seek
@@ -224,7 +224,7 @@ class SxGeo
 			'Pacific/Auckland', 'Pacific/Chatham', 'Pacific/Efate', 'Pacific/Fiji', 'Pacific/Galapagos', 'Pacific/Guadalcanal', 'Pacific/Honolulu',
 			'Pacific/Port_Moresby' ]
 		if region_seek > 0
-			if @memory_mode
+			if @memory_mode != 0
 				region = @regions_db[region_seek, @max_region].split "\0"
 			else
 				@fh.pos = @info['regions_begin'] + region_seek
