@@ -9,7 +9,7 @@ Gem::Specification.new do |gem|
   gem.authors       = ["nleo"]
   gem.description   = %q{Sypex Geo port}
   gem.summary       = gem.description
-  gem.homepage      = ""
+  gem.homepage      = "https://github.com/nleo/sxgeo"
 
   gem.files         = `git ls-files`.split($/)
   gem.executables   = gem.files.grep(%r{^bin/}).map{ |f| File.basename(f) }
