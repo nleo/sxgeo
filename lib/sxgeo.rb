@@ -169,10 +169,10 @@ class SxGeo
 		end
 		@city = {}
 		@city['regid'], @city['cc'],
-			@city['2fips'], @city['lat'], @city['lon'] = raw.unpack 'NCaNN'
+			@city['fips'], @city['lat'], @city['lon'] = raw.unpack 'NCa2NN'
 		@city['country']  = @cc2iso[@city['cc']];
-		@city['lat'] /= 1000000;
-		@city['lon'] /= 1000000;
+		@city['lat'] /= 1000000.0;
+		@city['lon'] /= 1000000.0;
 		@city['city'] = raw[15,raw.length].split("\0").first
 		return @city;
 	end
