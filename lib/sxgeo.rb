@@ -171,6 +171,11 @@ class SxGeo
 		@city['regid'], @city['cc'],
 			@city['fips'], @city['lat'], @city['lon'] = raw.unpack 'NCa2NN'
 		@city['country']  = @cc2iso[@city['cc']];
+
+		# convert unsigned int32 to signed int32
+    @city['lat'] -= 0xFFFF_FFFF if @city['lat'] >= 0x8000_0000
+    @city['lon'] -= 0xFFFF_FFFF if @city['lon'] >= 0x8000_0000
+
 		@city['lat'] /= 1000000.0;
 		@city['lon'] /= 1000000.0;
 		@city['city'] = raw[15,raw.length].split("\0").first
